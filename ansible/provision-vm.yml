@@ -1,0 +1,30 @@
+- hosts: vm
+  user: vagrant
+
+  tasks:
+  - name: Add user's public key to VM
+    authorized_key:
+      user: vagrant
+      state: present
+      key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
+  - name: Update repo and install latest packages
+    apt:
+      upgrade: yes
+      update_cache: yes
+    become: true
+
+  - name: Installing Desktop Environment
+    apt:
+      name: ubuntu-desktop
+      state: present
+    become: true
+
+  - name: Installing libvirt/qemu guest addons
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - qemu-guest-agent
+      - spice-vdagent
+    become: true

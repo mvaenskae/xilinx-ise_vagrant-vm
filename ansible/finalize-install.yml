@@ -1,0 +1,6 @@
+- hosts: vm
+  user: vagrant
+
+- include: playbooks/xilinx-usb-drivers.yml
+- include: playbooks/xilinx-menu-item.yml
+- include: playbooks/xilinx-ubuntu16-fixes.yml

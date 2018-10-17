@@ -1,0 +1,31 @@
+- hosts: vm
+  user: vagrant
+
+  tasks:
+  - name: Installing USB driver prerequisites
+    apt:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    with_items:
+      - libusb-dev:i386
+      - build-essential
+      - libc6-dev-i386
+      - fxload
+    become: true
+
+  - name: Downloading USB drivers
+    git:
+      repo: 'git://git.zerfleddert.de/usb-driver'
+      dest: /opt/Xilinx/usb-driver
+    become: yes
+
+  - name: Building USB drivers
+    make:
+      chdir: /opt/Xilinx/usb-driver
+      target: lib32
+    become: yes
+
+  - name: Patching in USB drivers
+    command: ./setup_pcusb /opt/Xilinx/14.7/ISE_DS/ISE/ chdir=/opt/Xilinx/usb-driver
+    become: yes

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Icon=/opt/Xilinx/14.7/ISE_DS/ISE/data/images/pn-ise.png
+Name[en_US]=Xilinx ISE 14.7
+Exec=/usr/local/bin/run-ise.sh
+Name=Xilinx ISE 14.7
+StartupNotify=true

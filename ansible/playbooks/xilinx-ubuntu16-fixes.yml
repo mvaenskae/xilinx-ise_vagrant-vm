@@ -1,0 +1,26 @@
+- hosts: vm
+  user: vagrant
+
+  tasks:
+  - name: Set Bash as default shell
+    shell: 'rm /bin/sh && ln -s /bin/bash /bin/sh'
+    become: true
+
+  - name: Adjust LD_LIBRARY_PATH for user
+    lineinfile:
+      path: ~/.bashrc
+      line: LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu/:/lib/x86_64-linux-gnu:/lib64/:/lib/
+      insertafter: #.*
+
+  - name: Adjusting LD_LIBRARY_PATH in Xilinx
+    copy: 
+      src: "{{ item.src }}"
+      dest: "{{ item.dest }}"
+      owner: root
+      group: root
+      mode: 0644
+    with_items:
+      - { src: '../files/common-settings64.sh', dest: '/opt/Xilinx/14.7/ISE_DS/common/.settings64.sh' }
+      - { src: '../files/edk-settings64.sh', dest: '/opt/Xilinx/14.7/ISE_DS/EDK/.settings64.sh' }
+      - { src: '../files/ise-settings64.sh',  dest: '/opt/Xilinx/14.7/ISE_DS/ISE/.settings64.sh' }
+    become: true

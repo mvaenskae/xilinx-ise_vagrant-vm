@@ -1,0 +1,18 @@
+- hosts: vm
+  user: vagrant
+
+  tasks:
+  - name: Installing bash helper script
+    become: yes
+    copy:
+      src: '../files/run-ise.sh'
+      dest: /usr/local/bin
+      mode: 0755
+
+  - name: Installing desktop entry
+    copy:
+      src: '../files/Xilinx ISE.desktop'
+      dest: /home/vagrant/Desktop
+      owner: vagrant
+      group: vagrant
+      mode: 0755
