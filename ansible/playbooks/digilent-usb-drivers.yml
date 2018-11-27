@@ -1,0 +1,32 @@
+---
+- name: Digilent Cable Software
+  hosts: vm
+  user: vagrant
+
+  tasks:
+  - name: Getting Remote User's $HOME
+    shell: "echo $HOME"
+    register: homedir
+    changed_when: false
+    check_mode: no<Paste>
+
+  - name: Downloading Digilent Runtime
+    get_url:
+        url: http://files.digilent.com/Software/Adept2+Runtime/2.19.2/digilent.adept.runtime_2.19.2-amd64.deb
+        dest: "{{ homedir.stdout }}/Downloads/digilent-runtime.deb"
+        checksum: sha256:7fb2a11a874dc6c93629abceeb6a496bcead651d23e3a65b14ef62b3a4191924
+
+  - name: Downloading Digilent Utilities
+    get_url:
+        url: http://files.digilent.com/Software/Adept2/digilent.adept.utilities_2.2.1-amd64.deb
+        dest: "{{ homedir.stdout }}/Downloads/digilent-utilities.deb"
+        checksum: sha256:ef70a6715a2850af40a60a4f5f7efeaea66c401ad472a6635611f06324badc3c
+
+  - name: Installing Runtime And Utilities
+    become: true
+    apt:
+        deb: "{{ homedir.stdout }}/{{ item }}"
+        state: present
+    loop:
+        - /Downloads/digilent-runtime.deb
+        - /Downloads/digilent-utilities.deb

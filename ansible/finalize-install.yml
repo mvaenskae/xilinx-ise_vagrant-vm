@@ -1,6 +1,9 @@
-- hosts: vm
+---
+- name: Post Xilinx ISE Installation For Setup
+  hosts: vm
   user: vagrant
 
-- include: playbooks/xilinx-usb-drivers.yml
-- include: playbooks/xilinx-menu-item.yml
-- include: playbooks/xilinx-ubuntu16-fixes.yml
+- import_playbook: playbooks/user-basics.yml
+- import_playbook: playbooks/xilinx-menu-item.yml
+- import_playbook: playbooks/digilent-usb-drivers.yml
+- import_playbook: playbooks/xilinx-usb-drivers.yml

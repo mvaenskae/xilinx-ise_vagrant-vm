@@ -1,31 +1,39 @@
-- hosts: vm
+---
+- name: Community Hacked USB Drivers
+  hosts: vm
   user: vagrant
 
   tasks:
-  - name: Installing USB driver prerequisites
+  - name: Installing Build Tools
+    become: yes
     apt:
-      name: "{{ item }}"
-      state: present
-      update_cache: yes
-    with_items:
-      - libusb-dev:i386
-      - build-essential
-      - libc6-dev-i386
-      - fxload
-    become: true
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    loop:
+        - libusb-dev
+        - libftdi-dev
+        - build-essential
+        - libc6-dev-i386
+        - fxload
 
-  - name: Downloading USB drivers
+  - name: Downloading USB Driver Sources
+    become: yes
     git:
-      repo: 'git://git.zerfleddert.de/usb-driver'
-      dest: /opt/Xilinx/usb-driver
-    become: yes
+        repo: 'git://git.zerfleddert.de/usb-driver'
+        dest: /opt/Xilinx/usb-driver
 
-  - name: Building USB drivers
+  - name: Building USB Drivers
+    become: yes
     make:
-      chdir: /opt/Xilinx/usb-driver
-      target: lib32
-    become: yes
+        chdir: /opt/Xilinx/usb-driver
+        target: all
 
-  - name: Patching in USB drivers
-    command: ./setup_pcusb /opt/Xilinx/14.7/ISE_DS/ISE/ chdir=/opt/Xilinx/usb-driver
+  - name: Installing USB Drivers
     become: yes
+    command: ./setup_pcusb /opt/Xilinx/14.7/ISE_DS/ISE/ chdir=/opt/Xilinx/usb-driver
+
+  - name: Fixing User LD_PRELOAD
+    lineinfile:
+        path: ~/.bashrc
+        line: LD_PRELOAD=/opt/Xilinx/usb-driver/libusb-driver.so

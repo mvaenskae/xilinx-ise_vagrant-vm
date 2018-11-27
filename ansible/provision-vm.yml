@@ -1,30 +1,32 @@
-- hosts: vm
+---
+- name: Vagrant-Only Provisioning
+  hosts: vm
   user: vagrant
 
   tasks:
-  - name: Add user's public key to VM
+  - name: Add User's SSH Key
     authorized_key:
-      user: vagrant
-      state: present
-      key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+        user: vagrant
+        state: present
+        key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
-  - name: Update repo and install latest packages
-    apt:
-      upgrade: yes
-      update_cache: yes
+  - name: Update Packages
     become: true
+    apt:
+        upgrade: yes
+        update_cache: yes
 
-  - name: Installing Desktop Environment
-    apt:
-      name: ubuntu-desktop
-      state: present
+  - name: Install Desktop Environment
     become: true
+    apt:
+        name: ubuntu-desktop
+        state: present
 
-  - name: Installing libvirt/qemu guest addons
-    apt:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - qemu-guest-agent
-      - spice-vdagent
+  - name: Install Virtualization Helpers
     become: true
+    apt:
+        name: "{{ item }}"
+        state: present
+    loop:
+        - qemu-guest-agent
+        - spice-vdagent

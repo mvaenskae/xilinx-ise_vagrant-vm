@@ -1,0 +1,25 @@
+---
+- name: User Preferences
+  hosts: vm
+  user: vagrant
+
+  tasks:
+  - name: Installing User Requested Packages
+    become: true
+    apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+    loop:
+        - redshift
+        - x11-xkb-utils
+        - x11-xserver-utils
+
+  - name: Pushing .xsessionrc
+    copy:
+        src: '../files/xsessionrc'
+        dest: /home/vagrant/.xsessionrc
+        owner: vagrant
+        group: vagrant
+        mode: 0755
+    ignore_errors: yes
