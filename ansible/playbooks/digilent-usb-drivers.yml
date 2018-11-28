@@ -8,7 +8,7 @@
     shell: "echo $HOME"
     register: homedir
     changed_when: false
-    check_mode: no<Paste>
+    check_mode: no
 
   - name: Downloading Digilent Runtime
     get_url:
